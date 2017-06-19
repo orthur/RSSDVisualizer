@@ -1,0 +1,93 @@
+</html>
+<head>
+<script src="http://code.highcharts.com/highcharts.js"></script></head>
+<nav class="navbar navbar-default">
+ <div class="container">
+  <div class="navbar-header">
+    <a class="navbar-brand" href="/">
+      Home
+    </a>
+  </div>
+ </nav>
+
+<h1>{{.payload.Name}}</h1>
+<body>
+<div id="container" style="width:100%; height:400px;"></div>
+<script>
+var HttpClient = function() {
+    this.get = function(aUrl, aCallback) {
+        var anHttpRequest = new XMLHttpRequest();
+        anHttpRequest.onreadystatechange = function() {
+            if (anHttpRequest.readyState == 4 && anHttpRequest.status == 200)
+                aCallback(anHttpRequest.responseText);
+        }
+        anHttpRequest.open("GET", aUrl, true );
+        anHttpRequest.setRequestHeader('Accept', 'application/json')
+        anHttpRequest.send(null);
+    }
+}
+var client = new HttpClient();
+client.get("/file/points/{{.payload.ID}}", function(response) {
+    // points = JSON.parse(response)
+    // var data = []
+    // for (i = 0; i < JSON.parse(response).length; i++) {
+    //     data.push([points[i]["x"],points[i]["y"]]);
+    // }
+    Highcharts.chart('container', {
+        chart: {
+            zoomType: 'x'
+        },
+        title: {
+            text: 'Plot'
+        },
+        xAxis: {
+            title: {
+                text: 'Time'
+            }
+        },
+        yAxis: {
+            title: {
+                text: 'Value'
+            }
+        },
+        legend: {
+            enabled: false
+        },
+        plotOptions: {
+            area: {
+                fillColor: {
+                    linearGradient: {
+                        x1: 0,
+                        y1: 0,
+                        x2: 0,
+                        y2: 0
+                    },
+                    stops: [
+                        [0, Highcharts.getOptions().colors[0]],
+                        [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+                    ]
+                },
+                marker: {
+                    radius: 2
+                },
+                lineWidth: 1,
+                states: {
+                    hover: {
+                        lineWidth: 1
+                    }
+                },
+                threshold: null
+            }
+        },
+
+        series: [{
+            turboThreshold: JSON.parse(response).length,
+            type: 'area',
+            name: 'Value',
+            data: JSON.parse(response)
+        }]
+    });
+});
+</script>
+</body>
+</html>
