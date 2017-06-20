@@ -11,7 +11,7 @@ var router *gin.Engine
 func main() {
 	go watchDir(BASEAPTH)
 
-	gin.SetMode(gin.DebugMode)
+	gin.SetMode(gin.ReleaseMode)
 
 	router = gin.Default()
 

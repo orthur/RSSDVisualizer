@@ -28,11 +28,6 @@ var HttpClient = function() {
 }
 var client = new HttpClient();
 client.get("/file/points/{{.payload.ID}}", function(response) {
-    // points = JSON.parse(response)
-    // var data = []
-    // for (i = 0; i < JSON.parse(response).length; i++) {
-    //     data.push([points[i]["x"],points[i]["y"]]);
-    // }
     Highcharts.chart('container', {
         chart: {
             zoomType: 'x'
@@ -55,18 +50,6 @@ client.get("/file/points/{{.payload.ID}}", function(response) {
         },
         plotOptions: {
             area: {
-                fillColor: {
-                    linearGradient: {
-                        x1: 0,
-                        y1: 0,
-                        x2: 0,
-                        y2: 0
-                    },
-                    stops: [
-                        [0, Highcharts.getOptions().colors[0]],
-                        [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
-                    ]
-                },
                 marker: {
                     radius: 2
                 },
@@ -81,6 +64,7 @@ client.get("/file/points/{{.payload.ID}}", function(response) {
         },
 
         series: [{
+            fillOpacity: 0,
             turboThreshold: JSON.parse(response).length,
             type: 'area',
             name: 'Value',
