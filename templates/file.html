@@ -1,6 +1,10 @@
-</html>
+<!DOCTYPE html>
+<html>
 <head>
-<script src="http://code.highcharts.com/highcharts.js"></script></head>
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="../../static/json2.js"></script>
+</head>
+<body>
 <nav class="navbar navbar-default">
  <div class="container">
   <div class="navbar-header">
@@ -8,11 +12,11 @@
       Home
     </a>
   </div>
- </nav>
+ </div>
+</nav>
 
 <h1>{{.payload.Name}}</h1>
-<body>
-<div id="container" style="width:100%; height:400px;"></div>
+<div id="container" style="height: auto;"></div>
 <script>
 var HttpClient = function() {
     this.get = function(aUrl, aCallback) {
@@ -28,9 +32,10 @@ var HttpClient = function() {
 }
 var client = new HttpClient();
 client.get("/file/points/{{.payload.ID}}", function(response) {
-    Highcharts.chart('container', {
+    new Highcharts.chart('container', {
         chart: {
-            zoomType: 'x'
+            zoomType: 'x',
+            renderTo: 'container'
         },
         title: {
             text: 'Plot'
@@ -49,7 +54,8 @@ client.get("/file/points/{{.payload.ID}}", function(response) {
             enabled: false
         },
         plotOptions: {
-            area: {
+            line: {
+                fillOpacity: 0,
                 marker: {
                     radius: 2
                 },
@@ -66,7 +72,7 @@ client.get("/file/points/{{.payload.ID}}", function(response) {
         series: [{
             fillOpacity: 0,
             turboThreshold: JSON.parse(response).length,
-            type: 'area',
+            type: 'line',
             name: 'Value',
             data: JSON.parse(response)
         }]
